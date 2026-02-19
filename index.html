@@ -1,84 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>超準心理測驗：測出你的潛在性格</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optical Illusion Test</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             margin: 0;
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             overflow: hidden;
+            cursor: crosshair;
         }
-        #quiz-container {
+        #game-box {
             text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid #444;
+            padding: 40px;
+            background: #222;
+            border-radius: 15px;
         }
         /* 隱藏的嚇人層 */
-        #scary-overlay {
+        #jumpscare {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
+            width: 100vw;
+            height: 100vh;
+            background: black;
             z-index: 9999;
-            justify-content: center;
-            align-items: center;
+            cursor: none;
         }
-        #scary-image {
+        #jumpscare img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            filter: contrast(150%) brightness(80%);
         }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #007bff;
+        .btn {
+            background: #e74c3c;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
         }
+        .btn:hover { background: #ff5e4d; }
     </style>
 </head>
 <body>
 
-    <div id="quiz-container">
-        <h1>🔍 心理測驗</h1>
-        <p>請凝視下方的按鈕 3 秒鐘，然後點擊它以查看你的靈魂顏色。</p>
-        <button onclick="startScare()">開始測驗</button>
+    <div id="game-box">
+        <h2>Can you see the hidden animal?</h2>
+        <p>Stare at the center and click "Reveal" when you are ready.</p>
+        <div style="width: 300px; height: 200px; background: repeating-conic-gradient(#333 0% 25%, #444 0% 50%) 50% / 20px 20px; margin: 0 auto; border: 5px solid #555;"></div>
+        <button class="btn" onclick="trigger()">REVEAL ANSWER</button>
     </div>
 
-    <div id="scary-overlay">
-        <img id="scary-image" src="https://rimm.tw/scary.jpg" alt="BOO!">
-        <audio id="scream-audio" src="https://rimm.tw/scream.mp3"></audio>
+    <div id="jumpscare">
+        <img src="https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=1000&auto=format&fit=crop" id="ghost-img">
+        <audio id="scream" src="https://www.soundjay.com/human/sounds/shriek-1.mp3"></audio>
     </div>
 
     <script>
-        function startScare() {
-            // 延遲 0.5 秒觸發，讓對方反應不過來
-            setTimeout(function() {
-                const overlay = document.getElementById('scary-overlay');
-                const audio = document.getElementById('scream-audio');
-                
-                overlay.style.display = 'flex';
-                audio.play().catch(e => console.log("音效播放失敗，需要使用者先互動"));
-                
-                // 進入全螢幕增加恐怖感
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                }
-            }, 500);
+        function trigger() {
+            const scarier = document.getElementById('jumpscare');
+            const audio = document.getElementById('scream');
+            
+            // 請求全螢幕 (大部分瀏覽器需要使用者點擊後才能進入)
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+
+            scarier.style.display = 'block';
+            audio.play();
+
+            // 讓螢幕閃爍增加震撼感
+            let interval = setInterval(() => {
+                scarier.style.filter = scarier.style.filter === 'invert(1)' ? 'invert(0)' : 'invert(1)';
+            }, 50);
+
+            // 5秒後停止
+            setTimeout(() => { clearInterval(interval); }, 5000);
         }
     </script>
 </body>
